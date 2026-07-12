@@ -1,0 +1,37 @@
+<div class="eam-elevator">
+  <div class="eam-status">
+    {{#if calling}}
+      <p class="eam-calling"><i class="fa-solid fa-spinner fa-spin"></i> {{localize "ELEVATORS_AND_MORE.Elevator.Calling"}}</p>
+    {{else if cabHere}}
+      <p class="eam-here"><i class="fa-solid fa-circle-check"></i> {{localize "ELEVATORS_AND_MORE.Elevator.CabHere"}}</p>
+    {{else}}
+      <p class="eam-away"><i class="fa-solid fa-location-dot"></i> {{localize "ELEVATORS_AND_MORE.Elevator.CabAt"}} <strong>{{cabFloorLabel}}</strong></p>
+    {{/if}}
+  </div>
+
+  <ul class="eam-floors">
+    {{#each floors}}
+      <li class="eam-floor{{#if this.isCab}} is-cab{{/if}}{{#if this.isHere}} is-here{{/if}}">
+        <span class="eam-floor-name">
+          {{#if this.isCab}}<i class="fa-solid fa-elevator"></i>{{/if}}
+          {{this.label}}
+        </span>
+        {{#if this.isHere}}
+          <span class="eam-tag">{{localize "ELEVATORS_AND_MORE.Elevator.YouAreHere"}}</span>
+        {{else if ../cabHere}}
+          <button type="button" class="eam-go" data-action="travel" data-floor-uuid="{{this.uuid}}">
+            {{localize "ELEVATORS_AND_MORE.Elevator.Go"}} <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        {{/if}}
+      </li>
+    {{/each}}
+  </ul>
+
+  {{#unless cabHere}}
+    <div class="eam-actions">
+      <button type="button" class="eam-call" data-action="call"{{#if calling}} disabled{{/if}}>
+        <i class="fa-solid fa-bell"></i> {{localize "ELEVATORS_AND_MORE.Elevator.Call"}}
+      </button>
+    </div>
+  {{/unless}}
+</div>

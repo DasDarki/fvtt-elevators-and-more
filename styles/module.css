@@ -1,0 +1,155 @@
+.elevators-and-more.elevator-app .window-content {
+  padding: 0.75rem;
+}
+
+.eam-elevator {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.eam-status p {
+  margin: 0;
+  padding: 0.4rem 0.6rem;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.eam-status .eam-here {
+  background: rgba(60, 160, 90, 0.25);
+}
+
+.eam-status .eam-calling {
+  background: rgba(200, 150, 40, 0.25);
+}
+
+.eam-floors {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.eam-floor {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--color-border-light-tertiary, rgba(0, 0, 0, 0.2));
+  border-radius: 4px;
+}
+
+.eam-floor.is-here {
+  border-color: rgba(60, 160, 90, 0.8);
+}
+
+.eam-floor.is-cab {
+  background: rgba(80, 120, 200, 0.15);
+}
+
+.eam-floor-name {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 600;
+}
+
+.eam-tag {
+  font-size: 0.8rem;
+  opacity: 0.75;
+  font-style: italic;
+}
+
+.eam-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.eam-actions .eam-call {
+  flex: 1;
+}
+
+.elevators-and-more-linking-banner {
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.9rem;
+  border-radius: 6px;
+  background: rgba(20, 20, 25, 0.92);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+.elevators-and-more-linking-banner button {
+  width: auto;
+  padding: 0.2rem 0.6rem;
+}
+
+.elevators-and-more-key-config {
+  margin-top: 0.75rem;
+  padding: 0.6rem;
+  border: 1px solid var(--color-border-light-tertiary, rgba(0, 0, 0, 0.2));
+  border-radius: 6px;
+}
+
+.elevators-and-more-key-config .eam-heading {
+  margin: 0 0 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.elevators-and-more-key-config .eam-keyid code {
+  user-select: all;
+}
+
+.elevators-and-more-key-config .eam-link-doors.active {
+  background: rgba(200, 150, 40, 0.35);
+}
+
+.elevators-and-more-key-config .eam-door-list {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.elevators-and-more-key-config .eam-door-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.25rem 0.4rem;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.elevators-and-more-key-config .eam-door-list li.eam-empty {
+  justify-content: center;
+  font-style: italic;
+  opacity: 0.7;
+  background: none;
+}
+
+.elevators-and-more-key-config .eam-remove-door {
+  width: auto;
+  flex: 0 0 auto;
+  padding: 0.15rem 0.45rem;
+}
+
+.elevators-and-more-key-config .eam-hint {
+  font-size: 0.85rem;
+  opacity: 0.8;
+  margin: 0.4rem 0 0;
+}

@@ -1,0 +1,31 @@
+<section class="elevators-and-more-key-config">
+  <h3 class="eam-heading"><i class="fa-solid fa-key"></i> {{localize "ELEVATORS_AND_MORE.Doors.SectionTitle"}}</h3>
+
+  {{#if hasKey}}
+    <p class="eam-keyid">{{localize "ELEVATORS_AND_MORE.Doors.KeyId"}}: <code>{{keyId}}</code></p>
+  {{else}}
+    <p class="eam-hint">{{localize "ELEVATORS_AND_MORE.Doors.NoKeyYet"}}</p>
+  {{/if}}
+
+  <button type="button" class="eam-link-doors{{#if linkingThis}} active{{/if}}">
+    <i class="fa-solid fa-link"></i>
+    {{#if linkingThis}}{{localize "ELEVATORS_AND_MORE.Doors.LinkingDone"}}{{else}}{{localize "ELEVATORS_AND_MORE.Doors.LinkDoors"}}{{/if}}
+  </button>
+
+  {{#if linkingThis}}
+    <p class="eam-hint">{{localize "ELEVATORS_AND_MORE.Doors.LinkingHint"}}</p>
+  {{/if}}
+
+  <ul class="eam-door-list">
+    {{#each doors}}
+      <li>
+        <span class="eam-door-label">{{this.label}}</span>
+        <button type="button" class="eam-remove-door" data-wall-uuid="{{this.wallUuid}}" title="{{localize "ELEVATORS_AND_MORE.Doors.RemoveDoor"}}">
+          <i class="fa-solid fa-trash"></i>
+        </button>
+      </li>
+    {{else}}
+      <li class="eam-empty">{{localize "ELEVATORS_AND_MORE.Doors.NoDoors"}}</li>
+    {{/each}}
+  </ul>
+</section>
