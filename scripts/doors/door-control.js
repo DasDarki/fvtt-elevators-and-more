@@ -95,6 +95,7 @@ function onLeft(proceed, event) {
   if (game.user.isGM) return proceed();
 
   if (!actorHasAnyKey(required)) {
+    if (wall.ds === DOOR_STATES.OPEN) return proceed();
     ui.notifications.warn(game.i18n.localize("ELEVATORS_AND_MORE.Doors.Locked"));
     return;
   }

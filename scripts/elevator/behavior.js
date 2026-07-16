@@ -1,5 +1,5 @@
 import { MODULE_ID, ELEVATOR_FLOOR_TYPE } from "../constants.js";
-import { consumeTeleport } from "./state.js";
+import { isTeleportSuppressed } from "./state.js";
 import { ElevatorApp } from "./ElevatorApp.js";
 
 const fields = foundry.data.fields;
@@ -22,7 +22,7 @@ export class ElevatorFloorBehavior extends foundry.data.regionBehaviors.RegionBe
 
     const regionUuid = event.region?.uuid ?? this.region?.uuid;
     if (!regionUuid) return;
-    if (consumeTeleport(regionUuid)) return;
+    if (isTeleportSuppressed(regionUuid)) return;
 
     ElevatorApp.open({
       shaftId: this.shaftId,

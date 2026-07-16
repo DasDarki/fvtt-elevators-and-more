@@ -56,6 +56,10 @@ export class ElevatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
     }
   }
 
+  static closeShaft(shaftId) {
+    ElevatorApp.#instances.get(shaftId)?.close();
+  }
+
   _onClose(options) {
     ElevatorApp.#instances.delete(this.#context.shaftId);
     return super._onClose(options);
@@ -97,8 +101,9 @@ export class ElevatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
       const result = await getSocket()?.executeAsGM(
         "travelElevator",
         this.#context.shaftId,
-        this.#context.tokenUuid,
-        destUuid
+        this.#context.floorUuid,
+        destUuid,
+        this.#context.tokenUuid
       );
       if (result?.sceneId && result.sceneId !== canvas?.scene?.id) {
         game.scenes.get(result.sceneId)?.view();

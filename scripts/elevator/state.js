@@ -77,18 +77,27 @@ export function regionCenter(regionDoc) {
   return { x: (minX + maxX) / 2, y: (minY + maxY) / 2 };
 }
 
-const recentTeleports = new Set();
-
-export function markTeleport(uuid) {
-  if (!uuid) return;
-  recentTeleports.add(uuid);
-  setTimeout(() => recentTeleports.delete(uuid), 1500);
+export function tokensInRegion(regionDoc) {
+  if (!regionDoc) return [];
+  if (regionDoc.tokens?.size) return [...regionDoc.tokens];
+  const scene = regionDoc.parent;
+  if (!scene) return [];
+  return scene.tokens.filter((token) => token.regions?.has(regionDoc));
 }
 
-export function consumeTeleport(uuid) {
-  if (recentTeleports.has(uuid)) {
-    recentTeleports.delete(uuid);
-    return true;
+const suppressedRegions = new Map();
+
+export function markTeleport(uuid, ms = 2500) {
+  if (!uuid) return;
+  suppressedRegions.set(uuid, Date.now() + ms);
+}
+
+export function isTeleportSuppressed(uuid) {
+  const expiry = suppressedRegions.get(uuid);
+  if (expiry === undefined) return false;
+  if (Date.now() > expiry) {
+    suppressedRegions.delete(uuid);
+    return false;
   }
-  return false;
+  return true;
 }
