@@ -42,42 +42,48 @@ export function registerDoorControls() {
     return;
   }
 
+  const targets = [
+    ["_onMouseDown", onLeft],
+    ["_onRightDown", onRight],
+    ["_getTexture", onGetTexture],
+    ["draw", onDraw]
+  ];
+
   const hasLibWrapper = !!globalThis.libWrapper && globalThis.libWrapper.is_fallback === false;
+  let patched = false;
   if (hasLibWrapper) {
     try {
-      libWrapper.register(
-        MODULE_ID,
-        "foundry.canvas.containers.DoorControl.prototype._onMouseDown",
-        function (wrapped, event) {
-          return onLeft.call(this, () => wrapped(event), event);
-        },
-        "MIXED"
-      );
-      libWrapper.register(
-        MODULE_ID,
-        "foundry.canvas.containers.DoorControl.prototype._onRightDown",
-        function (wrapped, event) {
-          return onRight.call(this, () => wrapped(event), event);
-        },
-        "MIXED"
-      );
-      return;
+      for (const [name, handler] of targets) {
+        libWrapper.register(
+          MODULE_ID,
+          `foundry.canvas.containers.DoorControl.prototype.${name}`,
+          function (original, ...args) {
+            return handler.call(this, () => original(...args), ...args);
+          },
+          "MIXED"
+        );
+      }
+      patched = true;
     } catch (err) {
       console.warn(`${MODULE_ID} | libWrapper registration failed, using manual patch.`, err);
     }
   }
 
-  manualPatch(DoorControl.prototype, "_onMouseDown", onLeft);
-  manualPatch(DoorControl.prototype, "_onRightDown", onRight);
+  if (!patched) {
+    for (const [name, handler] of targets) manualPatch(DoorControl.prototype, name, handler);
+  }
+
+  registerIndicatorHooks();
 }
 
 function manualPatch(proto, name, wrapper) {
   const marker = `__eam_${name}`;
   if (proto[marker]) return;
   const original = proto[name];
+  if (typeof original !== "function") return;
   proto[marker] = original;
-  proto[name] = function (event) {
-    return wrapper.call(this, () => original.call(this, event), event);
+  proto[name] = function (...args) {
+    return wrapper.call(this, () => original.apply(this, args), ...args);
   };
 }
 
@@ -176,4 +182,65 @@ function renderBanner() {
 
 function removeBanner() {
   document.getElementById("elevators-and-more-linking-banner")?.remove();
+}
+
+const TINT_HAS_KEY = 0x54d97b;
+const TINT_NO_KEY = 0xe0564f;
+const TINT_NEUTRAL = 0xffffff;
+
+function lockedTexture() {
+  const path = CONFIG.controlIcons.doorLocked;
+  const loader = foundry.canvas?.getTexture ?? globalThis.getTexture;
+  const texture = typeof loader === "function" ? loader(path) : null;
+  return texture ?? PIXI.Texture.from(path);
+}
+
+function onGetTexture(proceed) {
+  const wall = this.wall?.document;
+  const required = wall?.getFlag(MODULE_ID, "requiredKeys");
+  if (required?.length && !game.user.isGM && wall.ds === DOOR_STATES.LOCKED) {
+    return lockedTexture();
+  }
+  return proceed();
+}
+
+async function onDraw(proceed) {
+  const result = await proceed();
+  applyKeyTint(this);
+  return result;
+}
+
+function applyKeyTint(control) {
+  const icon = control?.icon;
+  const wall = control?.wall?.document;
+  if (!icon || !wall) return;
+
+  const required = wall.getFlag(MODULE_ID, "requiredKeys");
+  if (!required?.length || game.user.isGM) {
+    icon.tint = TINT_NEUTRAL;
+    return;
+  }
+  icon.tint = actorHasAnyKey(required) ? TINT_HAS_KEY : TINT_NO_KEY;
+}
+
+export function refreshDoorIndicators() {
+  for (const wall of canvas?.walls?.placeables ?? []) {
+    const control = wall.doorControl;
+    if (!control?.icon) continue;
+    const texture = control._getTexture();
+    if (texture) control.icon.texture = texture;
+    applyKeyTint(control);
+  }
+}
+
+function scheduleIndicatorRefresh() {
+  setTimeout(() => refreshDoorIndicators(), 50);
+}
+
+function registerIndicatorHooks() {
+  Hooks.on("canvasReady", scheduleIndicatorRefresh);
+  Hooks.on("controlToken", scheduleIndicatorRefresh);
+  Hooks.on("updateWall", scheduleIndicatorRefresh);
+  Hooks.on("createItem", scheduleIndicatorRefresh);
+  Hooks.on("deleteItem", scheduleIndicatorRefresh);
 }
