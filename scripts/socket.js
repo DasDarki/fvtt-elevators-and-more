@@ -1,6 +1,7 @@
 import { MODULE_ID } from "./constants.js";
 import { getShaftFloors, getShaftState, setShaftState, regionCenter, markTeleport, tokensInRegion } from "./elevator/state.js";
 import { ElevatorApp } from "./elevator/ElevatorApp.js";
+import { toWorld, toScene, tokenCenter } from "./levels/coords.js";
 
 let socket = null;
 
@@ -15,6 +16,61 @@ export function setupSocket() {
   socket.register("setDoorState", onSetDoorState);
   socket.register("viewScene", onViewScene);
   socket.register("closeElevator", onCloseElevator);
+  socket.register("jumpDown", onJumpDown);
+}
+
+async function onJumpDown(tokenUuid, targetSceneId) {
+  const token = await fromUuid(tokenUuid);
+  const targetScene = game.scenes.get(targetSceneId);
+  if (!token || !targetScene) return null;
+
+  const center = tokenCenter(token);
+  const world = toWorld(token.parent, center.x, center.y);
+  if (!world) return null;
+  const local = toScene(targetScene, world.x, world.y);
+  if (!local) return null;
+
+  const targetGrid = targetScene.grid.size;
+  const width = (token.width ?? 1) * targetGrid;
+  const height = (token.height ?? 1) * targetGrid;
+
+  markTeleport(token.actor?.uuid);
+  await landToken(token, targetScene, local, width, height);
+
+  return { sceneId: targetScene.id };
+}
+
+async function landToken(token, targetScene, center, width, height) {
+  const RegionDoc = CONFIG.Region?.documentClass ?? foundry.documents?.RegionDocument;
+  if (RegionDoc) {
+    try {
+      const region = new RegionDoc(
+        {
+          name: "eam-jump-target",
+          shapes: [{ type: "rectangle", x: center.x - width / 2, y: center.y - height / 2, width, height }]
+        },
+        { parent: targetScene }
+      );
+      await region.teleportToken(token, { placement: "center" });
+      return;
+    } catch (err) {
+      console.warn(`${MODULE_ID} | ephemeral region teleport failed, falling back to manual move.`, err);
+    }
+  }
+
+  const x = center.x - width / 2;
+  const y = center.y - height / 2;
+  if (token.parent.id === targetScene.id) {
+    await token.update({ x, y }, { animate: false });
+    return;
+  }
+
+  const data = token.toObject();
+  delete data._id;
+  data.x = x;
+  data.y = y;
+  await targetScene.createEmbeddedDocuments("Token", [data]);
+  await token.delete();
 }
 
 function onViewScene(sceneId) {

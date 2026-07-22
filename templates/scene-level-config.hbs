@@ -1,0 +1,32 @@
+<section class="elevators-and-more-level-config">
+  <h3 class="eam-heading"><i class="fa-solid fa-layer-group"></i> {{localize "ELEVATORS_AND_MORE.Levels.SectionTitle"}}</h3>
+  <p class="eam-hint">{{localize "ELEVATORS_AND_MORE.Levels.SectionHint"}}</p>
+
+  <div class="form-group">
+    <label>{{localize "ELEVATORS_AND_MORE.Levels.LevelIndex"}}</label>
+    <input type="number" step="1" name="flags.{{moduleId}}.levelIndex" value="{{levelIndex}}" />
+    <p class="notes">{{localize "ELEVATORS_AND_MORE.Levels.LevelIndexHint"}}</p>
+  </div>
+
+  <div class="form-group">
+    <label>{{localize "ELEVATORS_AND_MORE.Levels.LevelName"}}</label>
+    <input type="text" name="flags.{{moduleId}}.levelName" value="{{levelName}}" />
+  </div>
+
+  <div class="form-group">
+    <label>{{localize "ELEVATORS_AND_MORE.Levels.AnchorX"}}</label>
+    <input type="number" step="1" name="flags.{{moduleId}}.anchorX" value="{{anchorX}}" />
+  </div>
+
+  <div class="form-group">
+    <label>{{localize "ELEVATORS_AND_MORE.Levels.AnchorY"}}</label>
+    <input type="number" step="1" name="flags.{{moduleId}}.anchorY" value="{{anchorY}}" />
+  </div>
+
+  <div class="form-group">
+    <button type="button" class="eam-anchor-center">
+      <i class="fa-solid fa-crosshairs"></i> {{localize "ELEVATORS_AND_MORE.Levels.AnchorToCenter"}}
+    </button>
+  </div>
+  <p class="eam-hint">{{localize "ELEVATORS_AND_MORE.Levels.AnchorHint"}}</p>
+</section>

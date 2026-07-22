@@ -22,7 +22,9 @@
   "socket": true,
   "documentTypes": {
     "RegionBehavior": {
-      "elevatorFloor": {}
+      "elevatorFloor": {},
+      "levelOpening": {},
+      "levelJumpDown": {}
     }
   },
   "relationships": {
