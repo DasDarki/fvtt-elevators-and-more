@@ -1,0 +1,25 @@
+<div class="eam-contract-control">
+  <p class="eam-hint">{{localize "ELEVATORS_AND_MORE.Contract.ControlHint"}}</p>
+
+  {{#if hasPlayers}}
+    <div class="form-group">
+      <label>{{localize "ELEVATORS_AND_MORE.Contract.Target"}}</label>
+      <select class="eam-contract-target">
+        <option value="all">{{localize "ELEVATORS_AND_MORE.Contract.AllPlayers"}}</option>
+        {{#each players}}
+          <option value="{{this.id}}">{{this.name}}</option>
+        {{/each}}
+      </select>
+    </div>
+
+    <div class="eam-contract-buttons">
+      <button type="button" data-action="send"><i class="fa-solid fa-scroll"></i> {{localize "ELEVATORS_AND_MORE.Contract.Send"}}</button>
+      <button type="button" data-action="unroll"><i class="fa-solid fa-scroll-old"></i> {{localize "ELEVATORS_AND_MORE.Contract.Unroll"}}</button>
+      <button type="button" data-action="recall"><i class="fa-solid fa-xmark"></i> {{localize "ELEVATORS_AND_MORE.Contract.Recall"}}</button>
+    </div>
+    <button type="button" class="eam-contract-preview-btn" data-action="preview"><i class="fa-solid fa-eye"></i> {{localize "ELEVATORS_AND_MORE.Contract.Preview"}}</button>
+  {{else}}
+    <p class="eam-empty">{{localize "ELEVATORS_AND_MORE.Contract.NoPlayers"}}</p>
+    <button type="button" class="eam-contract-preview-btn" data-action="preview"><i class="fa-solid fa-eye"></i> {{localize "ELEVATORS_AND_MORE.Contract.Preview"}}</button>
+  {{/if}}
+</div>

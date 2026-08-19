@@ -6,6 +6,7 @@ import { registerItemSheetHooks } from "./scripts/doors/item-sheet.js";
 import { registerLevelBehaviors } from "./scripts/levels/behaviors.js";
 import { registerGhostLayer } from "./scripts/levels/GhostLayer.js";
 import { registerSceneConfigHooks } from "./scripts/levels/scene-config.js";
+import { registerContractControls } from "./scripts/contract/ContractControl.js";
 
 Hooks.once("init", () => {
   registerSettings();
@@ -14,6 +15,7 @@ Hooks.once("init", () => {
   registerItemSheetHooks();
   registerSceneConfigHooks();
   registerGhostLayer();
+  registerContractControls();
 });
 
 Hooks.once("setup", () => {

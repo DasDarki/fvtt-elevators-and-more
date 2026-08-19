@@ -2,6 +2,7 @@ import { MODULE_ID } from "./constants.js";
 import { getShaftFloors, getShaftState, setShaftState, regionCenter, markTeleport, tokensInRegion } from "./elevator/state.js";
 import { ElevatorApp } from "./elevator/ElevatorApp.js";
 import { toWorld, toScene, tokenCenter } from "./levels/coords.js";
+import { ContractScroll } from "./contract/ContractScroll.js";
 
 let socket = null;
 
@@ -17,6 +18,16 @@ export function setupSocket() {
   socket.register("viewScene", onViewScene);
   socket.register("closeElevator", onCloseElevator);
   socket.register("jumpDown", onJumpDown);
+  socket.register("contractShow", () => ContractScroll.show());
+  socket.register("contractUnroll", () => ContractScroll.unroll());
+  socket.register("contractClose", () => ContractScroll.close());
+  socket.register("contractSigned", onContractSigned);
+}
+
+function onContractSigned(userId) {
+  const user = game.users.get(userId);
+  const name = user?.name ?? "A player";
+  ui.notifications.info(game.i18n.format("ELEVATORS_AND_MORE.Contract.SignedNotify", { name }));
 }
 
 async function onJumpDown(tokenUuid, targetSceneId) {
