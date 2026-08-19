@@ -2,7 +2,7 @@
   "id": "elevators-and-more",
   "title": "Elevators & More",
   "description": "Connect scene regions into elevator shafts and gate doors behind key items.",
-  "version": "1.0.2",
+  "version": "1.1.1",
   "compatibility": {
     "minimum": "13",
     "verified": "13"
